@@ -1,7 +1,8 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 import { Container, Row, Col } from "styled-bootstrap-grid";
 import Card from "./Card";
+import fetchJsonp from 'fetch-jsonp';
 
 const ContentBlock = styled.div`
 
@@ -69,76 +70,52 @@ const Search = styled.input`
   }
 `;
 
-const RowStyled = styled(Row)`
+const ImagesRow = styled.div`
   margin: 0 -8px;
+  column-count: 3;
+  column-gap: 0;
 `;
 
 const Content = () => {
+    const [images, setImages] = useState([]);
+    const [searchQuery, setSearchQuery] = useState(null);
+    const [page, setPage] = useState(0);
 
-    const data = [
-        {
-            title: "Photo title 1",
-            author: "Author 1",
-            authorLink: "Link",
-            imageLink: "",
-            image: "https://cf.bstatic.com/images/hotel/max1024x768/116/116281457.jpg",
-            description: "Lorem ipsum dolor",
-            tags: ["tag1", "tag2", "tag3"]
-        },
-        {
-            title: "Photo title 2",
-            author: "Author 2",
-            authorLink: "Link",
-            imageLink: "",
-            image: "https://cf.bstatic.com/images/hotel/max1024x768/116/116281457.jpg",
-            description: "Lorem ipsum dolor",
-            tags: ["tag1", "tag2", "tag3"]
-        },
-        {
-            title: "Photo title 3",
-            author: "Author 3",
-            authorLink: "Link",
-            imageLink: "",
-            image: "https://cf.bstatic.com/images/hotel/max1024x768/116/116281457.jpg",
-            description: "Lorem ipsum dolor",
-            tags: ["tag1", "tag2", "tag3"]
-        },
-        {
-            title: "Photo title 4",
-            author: "Author 4",
-            authorLink: "Link",
-            imageLink: "",
-            image: "https://cf.bstatic.com/images/hotel/max1024x768/116/116281457.jpg",
-            description: "Lorem ipsum dolor",
-            tags: ["tag1", "tag2", "tag3"]
-        },
-        {
-            title: "Photo title 5",
-            author: "Author 5",
-            authorLink: "Link",
-            imageLink: "",
-            image: "https://cf.bstatic.com/images/hotel/max1024x768/116/116281457.jpg",
-            description: "Lorem ipsum dolor",
-            tags: ["tag1", "tag2", "tag3"]
-        },
-    ]
+    const loadImages = (query) => {
+        const encodedQuery = encodeURIComponent(query)
+        fetchJsonp(
+            `https://api.flickr.com/services/rest/?method=flickr.photos.search&format=json&api_key=2239552c96fceaa19e99ddc25451e84d&lang=en-us&safe_search=1&per_page=10&extras=description,url_m,path_alias,tags&page=${page}&media=photos&format=json&tags=${encodedQuery}`,
+            {jsonpCallback: 'jsoncallback'}
+        )
+            .then(res => res.json())
+            .then(({photos}) => setImages(photos["photo"]))
+            .catch(() => alert("Ups.. something went wrong :("))
+    }
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => loadImages(searchQuery), 1000);
+        return () => clearTimeout(timeoutId);
+    }, [searchQuery]);
+
+    console.log(images)
+
     return (
         <ContentBlock>
             <Container>
                 <Row>
                     <Col md={12}>
-                        <Search type="text" placeholder="Search..."/>
+                        <Search type="text" placeholder="Search..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}/>
                     </Col>
                 </Row>
-                <RowStyled>
-                    {data.map((item, index) => {
+                <ImagesRow>
+                    {images.map((item, index) => {
                         return(
-                            <Col sm={6} md={3} key={index}>
-                                <Card item={item}/>
-                            </Col>
+                            <Card item={item}/>
                         )
                     })}
-                </RowStyled>
+                </ImagesRow>
             </Container>
         </ContentBlock>
     )

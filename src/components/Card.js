@@ -6,11 +6,13 @@ const Block = styled.div`
   border-radius: 5px;
   margin: 8px;
   padding: 16px;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  break-inside: avoid;
 `;
 
 const Image = styled.img`
   object-fit: cover;
-  height: 100%;
   width: 100%;
   display: block;
 `;
@@ -18,21 +20,27 @@ const Image = styled.img`
 const TitleRow = styled.div`
   margin: 12px 0;
   font-family: Proxima Nova, helvetica neue, helvetica, arial, sans-serif;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   
   a {
     color: #000;
     font-size: 16px;
     line-height: 18px;
     font-weight: 400;
+    width: max-content;
+    display: block;
   }
   
   span {
     margin: 0 4px;
     font-weight: 400;
+    display: block;
   }
 `;
 
-const Description = styled.p`
+const Description = styled.div`
   font-family: Proxima Nova, helvetica neue, helvetica, arial, sans-serif;
   font-size: 16px;
   line-height: 18px;
@@ -62,27 +70,45 @@ const SingleTag = styled.div`
 `;
 
 const Card = ({ item }) => {
+
+    const formatDescription = (description) => {
+        const splitDescription = description.split("<p>")
+        const lastElement = splitDescription[splitDescription.length - 1]
+
+        const filtered = lastElement.replace(/(<([^>]+)>)/gi, "").replace("&", " &").replace("&quotx", '"')
+
+        return filtered
+    }
+
+    const tags = item.tags.split(" ").filter((e) => e !== "null");
+
+    const imageLink = `https://www.flickr.com/photos/${item.owner}/${item.id}`;
+
     return (
         <Block>
-            <a href={item.imageLink}>
-                <Image src={item.image} alt={item.description}/>
+            <a href={imageLink}>
+                <Image src={item.url_m} alt={item.description._content}/>
             </a>
 
             <TitleRow>
-                <a href={item.imageLink}>{item.title}</a>
+                <a href={imageLink}>{item.title}</a>
                 <span>by</span>
-                <a href={item.authorLink}>{item.author}</a>
+                <a href={`https://www.flickr.com/people/${item.owner}`}>{item.pathalias !== null ? item.pathalias : item.owner}</a>
             </TitleRow>
-            <Description>{item.description}</Description>
-            <Tags>
-                <span>Tags:</span>{item.tags.map((tag, tagIndex) => {
-                    const isLast = item.tags.length-1;
+            {/*<Description>*/}
+            {/*    {formatDescription(item.description)}*/}
+            {/*</Description>*/}
+            {/*{tags.length > 0 &&*/}
+            {/*    <Tags>*/}
+            {/*        <span>Tags:</span>{tags.map((tag, tagIndex) => {*/}
+            {/*        const isLast = tags.length-1;*/}
 
-                    return(
-                        <SingleTag><a href={tag} key={tagIndex}>{tag}</a>{tagIndex !== isLast && <span>, </span>}</SingleTag>
-                    )
-                })}
-            </Tags>
+            {/*        return(*/}
+            {/*            <SingleTag><a href={tag} key={tagIndex}>{tag}</a>{tagIndex !== isLast && <span>, </span>}</SingleTag>*/}
+            {/*        )*/}
+            {/*    })}*/}
+            {/*</Tags>*/}
+            {/*}*/}
         </Block>
     )
 }
