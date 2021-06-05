@@ -6,6 +6,11 @@ const IntroBlock = styled.div`
   padding: 20px 0 40px;
 `;
 
+const TitleLink = styled.a`
+  color: black;
+  text-decoration: none;
+`;
+
 const Title = styled.h1`
   font-size: 20px;
   line-height: 22px;
@@ -27,7 +32,7 @@ const Intro = () => {
             <Container>
                 <Row>
                     <Col md={12}>
-                        <Title>Find your inspiration.</Title>
+                        <TitleLink href="/"><Title>Find your inspiration.</Title></TitleLink>
                     </Col>
                 </Row>
             </Container>

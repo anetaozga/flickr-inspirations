@@ -4,11 +4,21 @@ import styled from "styled-components";
 const Block = styled.div`
   border: 1px solid darkgray;
   border-radius: 5px;
-  margin: 8px;
+  margin: 0 0 16px 0;
   padding: 16px;
-  -webkit-column-break-inside: avoid;
-  page-break-inside: avoid;
-  break-inside: avoid;
+  max-width: 100%;
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+
+  @media(min-width: 576px){
+    max-width: calc(50% - 16px);
+    margin: 0 8px 16px 8px;
+  }
+  
+  @media(min-width: 992px){
+    max-width: calc(33.33% - 16px);
+  }
 `;
 
 const Image = styled.img`
@@ -45,9 +55,12 @@ const Description = styled.div`
   font-size: 16px;
   line-height: 18px;
   font-weight: 300;
+  word-break: break-all;
 `;
 
 const Tags = styled.div`
+  margin-top: 8px;
+  
   span {
     font-family: Proxima Nova, helvetica neue, helvetica, arial, sans-serif;
     font-size: 14px;
@@ -72,15 +85,25 @@ const SingleTag = styled.div`
 const Card = ({ item }) => {
 
     const formatDescription = (description) => {
-        const splitDescription = description.split("<p>")
-        const lastElement = splitDescription[splitDescription.length - 1]
+        if (description !== ""){
 
-        const filtered = lastElement.replace(/(<([^>]+)>)/gi, "").replace("&", " &").replace("&quotx", '"')
+            let filteredDescription = description.replace(/(<([^>]+)>)/gi, "")
+                .replace("&", " &")
+                .replace("&quotx", '"')
+                .replace("&amp;", "")
 
-        return filtered
+            if (filteredDescription.length > 200){
+
+                filteredDescription = filteredDescription.substring(0,200) + " (...)"
+
+                return filteredDescription;
+            }
+
+            return filteredDescription;
+        }
     }
 
-    const tags = item.tags.split(" ").filter((e) => e !== "null");
+    const tags = item.tags.split(" ").filter((e) => e !== "");
 
     const imageLink = `https://www.flickr.com/photos/${item.owner}/${item.id}`;
 
@@ -89,26 +112,29 @@ const Card = ({ item }) => {
             <a href={imageLink}>
                 <Image src={item.url_m} alt={item.description._content}/>
             </a>
-
             <TitleRow>
                 <a href={imageLink}>{item.title}</a>
                 <span>by</span>
                 <a href={`https://www.flickr.com/people/${item.owner}`}>{item.pathalias !== null ? item.pathalias : item.owner}</a>
             </TitleRow>
-            {/*<Description>*/}
-            {/*    {formatDescription(item.description)}*/}
-            {/*</Description>*/}
-            {/*{tags.length > 0 &&*/}
-            {/*    <Tags>*/}
-            {/*        <span>Tags:</span>{tags.map((tag, tagIndex) => {*/}
-            {/*        const isLast = tags.length-1;*/}
+            {item.description._content &&
+                <Description>
+                    {formatDescription(item.description._content)}
+                </Description>
+            }
+            {tags.length > 0 &&
+            <Tags>
+                <span>Tags:</span>{tags.map((tag, tagIndex) => {
 
-            {/*        return(*/}
-            {/*            <SingleTag><a href={tag} key={tagIndex}>{tag}</a>{tagIndex !== isLast && <span>, </span>}</SingleTag>*/}
-            {/*        )*/}
-            {/*    })}*/}
-            {/*</Tags>*/}
-            {/*}*/}
+                const isLast = tags.length - 1;
+
+                return (
+                    <SingleTag key={tagIndex}><a href={tag} key={tagIndex}>{tag}</a>{tagIndex !== isLast &&
+                    <span>, </span>}</SingleTag>
+                )
+            })}
+            </Tags>
+            }
         </Block>
     )
 }
