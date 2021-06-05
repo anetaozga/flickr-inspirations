@@ -1,26 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 
-const Block = styled.div`
-  border: 1px solid darkgray;
-  border-radius: 5px;
-  margin: 0 0 16px 0;
-  padding: 16px;
-  max-width: 100%;
-  width: 100%;
-  display: block;
-  box-sizing: border-box;
-
-  @media(min-width: 576px){
-    max-width: calc(50% - 16px);
-    margin: 0 8px 16px 8px;
-  }
-  
-  @media(min-width: 992px){
-    max-width: calc(33.33% - 16px);
-  }
-`;
-
 const Image = styled.img`
   object-fit: cover;
   width: 100%;
@@ -108,9 +88,15 @@ const Card = ({ item }) => {
     const imageLink = `https://www.flickr.com/photos/${item.owner}/${item.id}`;
 
     return (
-        <Block>
+        <React.Fragment>
             <a href={imageLink}>
-                <Image src={item.url_m} alt={item.description._content}/>
+                {item.url_m ?
+                    <Image src={item.url_m} alt={item.description._content}/>
+                    :
+                    <div>
+                        {item.description._conten}
+                    </div>
+                }
             </a>
             <TitleRow>
                 <a href={imageLink}>{item.title}</a>
@@ -135,7 +121,7 @@ const Card = ({ item }) => {
             })}
             </Tags>
             }
-        </Block>
+        </React.Fragment>
     )
 }
 

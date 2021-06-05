@@ -1,14 +1,11 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import styled, {keyframes} from "styled-components";
 import { Container, Row, Col } from "styled-bootstrap-grid";
 import Card from "./Card";
 import fetchJsonp from 'fetch-jsonp';
 import SafeIcon from "../../src/images/lock.svg";
 import LoadingIcon from "../../src/images/loading.svg";
-
-const ContentBlock = styled.div`
-
-`;
+import { Fade } from 'react-reveal';
 
 const Search = styled.input`
   border: 1px solid darkgray;
@@ -136,6 +133,26 @@ const Loading = styled.img`
   animation: ${rotating} 2s linear infinite;
 `;
 
+const CardBlock = styled.div`
+  border: 1px solid darkgray;
+  border-radius: 5px;
+  margin: 0 0 16px 0;
+  padding: 16px;
+  max-width: 100%;
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+
+  @media(min-width: 576px){
+    max-width: calc(50% - 16px);
+    margin: 0 8px 16px 8px;
+  }
+  
+  @media(min-width: 992px){
+    max-width: calc(33.33% - 16px);
+  }
+`;
+
 const Content = () => {
     let initSearch = ""
     if (window && window.location.pathname !== "/"){
@@ -187,8 +204,6 @@ const Content = () => {
             setPage(1);
             setChange(Date.now())
         }, 1000));
-
-        console.log("updated")
     }
 
     const loadMore = (e) => {
@@ -213,31 +228,39 @@ const Content = () => {
 
 
     return (
-        <ContentBlock>
-            <Container>
-                <Row>
-                    <Col md={12}>
-                        <ButtonsBlock>
-                            <Search type="text" placeholder="Search..."
-                                    value={searchQuery}
-                                    onChange={(e) => updateQuery(e.target.value)}/>
-                            <SafeSearchButton aria-label="Safe Search"
-                                              onClick={toggleSafeSearch}
-                                              safe={isSearchSafe ? 1 :0}>
-                                <img src={SafeIcon} alt="Lock icon"/>
-                            </SafeSearchButton>
-                        </ButtonsBlock>
-                    </Col>
-                </Row>
-                <ImagesRow>
-                    {images.map((item, index) => <Card item={item} key={index}/>)}
-                </ImagesRow>
+        <Container>
+            <Row>
+                <Col md={12}>
+                    <ButtonsBlock>
+                        <Search type="text" placeholder="Search..."
+                                value={searchQuery}
+                                onChange={(e) => updateQuery(e.target.value)}/>
+                        <SafeSearchButton aria-label="Safe Search"
+                                          onClick={toggleSafeSearch}
+                                          safe={isSearchSafe ? 1 : 0}>
+                            <img src={SafeIcon} alt="Lock icon"/>
+                        </SafeSearchButton>
+                    </ButtonsBlock>
+                </Col>
+            </Row>
+            <ImagesRow>
+                {images.map((item, index) => {
+                    const position = index % 3;
 
-                {isLoading &&
-                    <Loading src={LoadingIcon} alt="Loading"/>
-                }
-            </Container>
-        </ContentBlock>
+                    return (
+                        <CardBlock>
+                            <Fade duration={400} delay={position * 400}>
+                                <Card item={item} key={index}/>
+                            </Fade>
+                        </CardBlock>
+                    )
+                })}
+            </ImagesRow>
+
+            {isLoading &&
+                <Loading src={LoadingIcon} alt="Loading"/>
+            }
+        </Container>
     )
 }
 
