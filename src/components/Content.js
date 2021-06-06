@@ -6,6 +6,7 @@ import fetchJsonp from 'fetch-jsonp';
 import SafeIcon from "../../src/images/lock.svg";
 import LoadingIcon from "../../src/images/loading.svg";
 import { Fade } from 'react-reveal';
+import BadWords from "badwords";
 
 const Search = styled.input`
   border: 1px solid darkgray;
@@ -134,10 +135,6 @@ const Loading = styled.img`
 `;
 
 const CardBlock = styled.div`
-  border: 1px solid darkgray;
-  border-radius: 5px;
-  margin: 0 0 16px 0;
-  padding: 16px;
   max-width: 100%;
   width: 100%;
   display: block;
@@ -153,11 +150,26 @@ const CardBlock = styled.div`
   }
 `;
 
+const NoResultsBlock = styled.h2`
+  text-align: center;
+  width: 100%;
+  font-family: Proxima Nova,helvetica neue,helvetica,arial,sans-serif;
+  font-weight: 200;
+  font-size: 24px;
+  margin-bottom: 0;
+`;
+
 const Content = () => {
     let initSearch = ""
     if (window && window.location.pathname !== "/"){
         initSearch = window.location.pathname.substring(1)
     }
+
+    const badWords = [...BadWords, ...[
+        'sexy',
+        'nude',
+        'sexi'
+    ]]
 
     const [page, setPage] = useState(1);
     const [change, setChange] = useState(Date.now())
@@ -171,11 +183,13 @@ const Content = () => {
         const encodedQuery = encodeURIComponent(searchQuery)
 
         fetchJsonp(
-            `https://api.flickr.com/services/rest/?method=flickr.photos.search&format=json&api_key=2239552c96fceaa19e99ddc25451e84d&lang=en-us&safe_search=${isSearchSafe ? 1 : 3}&per_page=10&extras=description,url_m,path_alias,tags&page=${page}&media=photos&format=json&tags=${encodedQuery}`,
+            `https://api.flickr.com/services/rest/?method=flickr.photos.search&format=json&api_key=2239552c96fceaa19e99ddc25451e84d&lang=en-us&safe_search=${isSearchSafe ? 1 : 3}&per_page=30&extras=description,url_m,path_alias,tags&page=${page}&media=photos&format=json&tags=${encodedQuery}`,
             {jsonpCallback: 'jsoncallback'}
         )
             .then(res => res.json())
-            .then(({photos}) => setImages([...images, ...photos["photo"]]))
+            .then(({photos}) => photos["photo"].filter((photo) => photo.tags !== ""))
+            .then(photos => photos.filter(photo => !isSearchSafe || photo.tags.split(" ").filter(tag => badWords.includes(tag)).length === 0))
+            .then((photos) => setImages([...images, ...photos]))
             .then(() => setIsLoading(false))
             .catch(() => alert("Ups.. something went wrong :("))
     }
@@ -244,17 +258,25 @@ const Content = () => {
                 </Col>
             </Row>
             <ImagesRow>
-                {images.map((item, index) => {
-                    const position = index % 3;
+                {images.length > 0 ?
+                    <React.Fragment>
+                        {images.map((item, index) => {
+                            const position = index % 3;
 
-                    return (
-                        <CardBlock>
-                            <Fade duration={400} delay={position * 400}>
-                                <Card item={item} key={index}/>
-                            </Fade>
-                        </CardBlock>
-                    )
-                })}
+                            return (
+                                <CardBlock key={index}>
+                                    <Fade duration={400} delay={position * 400}>
+                                        <Card item={item} key={index}/>
+                                    </Fade>
+                                </CardBlock>
+                            )
+                        })}
+                    </React.Fragment>
+                    :
+                    <NoResultsBlock>
+                        Sorry, no results found :(
+                    </NoResultsBlock>
+                }
             </ImagesRow>
 
             {isLoading &&

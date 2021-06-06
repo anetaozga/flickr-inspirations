@@ -1,6 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 
+const CardBlock = styled.div`
+  border: 1px solid darkgray;
+  border-radius: 5px;
+  margin: 0 0 16px 0;
+  padding: 16px;
+`;
+
 const Image = styled.img`
   object-fit: cover;
   width: 100%;
@@ -59,6 +66,7 @@ const SingleTag = styled.div`
     line-height: 18px;
     font-weight: 400;
     color: #000;
+    word-break: break-all;
   }
 `;
 
@@ -88,7 +96,7 @@ const Card = ({ item }) => {
     const imageLink = `https://www.flickr.com/photos/${item.owner}/${item.id}`;
 
     return (
-        <React.Fragment>
+        <CardBlock>
             <a href={imageLink}>
                 {item.url_m ?
                     <Image src={item.url_m} alt={item.description._content}/>
@@ -121,7 +129,7 @@ const Card = ({ item }) => {
             })}
             </Tags>
             }
-        </React.Fragment>
+        </CardBlock>
     )
 }
 
