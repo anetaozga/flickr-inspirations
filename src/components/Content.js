@@ -4,6 +4,7 @@ import { Container, Row, Col } from "styled-bootstrap-grid";
 import Card from "./Card";
 import fetchJsonp from 'fetch-jsonp';
 import SafeIcon from "../../src/images/lock.svg";
+import UnsafeIcon from "../../src/images/unlock.svg";
 import LoadingIcon from "../../src/images/loading.svg";
 import { Fade } from 'react-reveal';
 import BadWords from "badwords";
@@ -159,6 +160,24 @@ const NoResultsBlock = styled.h2`
   margin-bottom: 0;
 `;
 
+const WarningBlock = styled.div`
+  text-align: center;
+  width: 100%;
+  font-family: Proxima Nova,helvetica neue,helvetica,arial,sans-serif;
+  font-size: 18px;
+  margin-bottom: 20px;
+  
+  span {
+    font-weight: 500;
+    color: #ffc007;
+  }
+  
+  p {
+    margin-top: 4px;
+    font-weight: 200;
+  }
+`;
+
 const Content = () => {
     let initSearch = ""
     if (window && window.location.pathname !== "/"){
@@ -252,9 +271,15 @@ const Content = () => {
                         <SafeSearchButton aria-label="Safe Search"
                                           onClick={toggleSafeSearch}
                                           safe={isSearchSafe ? 1 : 0}>
-                            <img src={SafeIcon} alt="Lock icon"/>
+                            <img src={isSearchSafe ? SafeIcon : UnsafeIcon} alt="Lock icon"/>
                         </SafeSearchButton>
                     </ButtonsBlock>
+                    {!isSearchSafe &&
+                        <WarningBlock>
+                            <span>Warning!</span>
+                            <p>You are now previewing unrestricted content</p>
+                        </WarningBlock>
+                    }
                 </Col>
             </Row>
             <ImagesRow>
