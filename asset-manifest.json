@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.js": "/flickr-inspirations/static/js/main.481e8201.chunk.js",
+    "main.js.map": "/flickr-inspirations/static/js/main.481e8201.chunk.js.map",
+    "runtime-main.js": "/flickr-inspirations/static/js/runtime-main.1fbd3360.js",
+    "runtime-main.js.map": "/flickr-inspirations/static/js/runtime-main.1fbd3360.js.map",
+    "static/js/2.dbcd5de2.chunk.js": "/flickr-inspirations/static/js/2.dbcd5de2.chunk.js",
+    "static/js/2.dbcd5de2.chunk.js.map": "/flickr-inspirations/static/js/2.dbcd5de2.chunk.js.map",
+    "static/js/3.1ca0b1f0.chunk.js": "/flickr-inspirations/static/js/3.1ca0b1f0.chunk.js",
+    "static/js/3.1ca0b1f0.chunk.js.map": "/flickr-inspirations/static/js/3.1ca0b1f0.chunk.js.map",
+    "index.html": "/flickr-inspirations/index.html",
+    "static/js/2.dbcd5de2.chunk.js.LICENSE.txt": "/flickr-inspirations/static/js/2.dbcd5de2.chunk.js.LICENSE.txt",
+    "static/media/loading.11b2db68.svg": "/flickr-inspirations/static/media/loading.11b2db68.svg",
+    "static/media/lock.473264bf.svg": "/flickr-inspirations/static/media/lock.473264bf.svg",
+    "static/media/unlock.8f78cecb.svg": "/flickr-inspirations/static/media/unlock.8f78cecb.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.1fbd3360.js",
+    "static/js/2.dbcd5de2.chunk.js",
+    "static/js/main.481e8201.chunk.js"
+  ]
+}
